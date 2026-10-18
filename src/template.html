@@ -178,7 +178,7 @@ footer a { color: var(--muted); }
   <li>It's quiet on battery. The fans stay off while you read, write or browse. <span class="dim">was: 2,000–3,800 rpm at idle. Temps under sustained load in this mode aren't logged yet</span></li>
   <li>Plug in a charger and it just does the right thing, whether it's USB-C or the barrel. <span class="dim">was: asusd and power-profiles fighting over the profile and EPP</span></li>
   <li>Plug in a monitor and it comes up at its native resolution, and your windows are where you left them after a replug. <span class="dim">was: windows rendered off-screen after an HDMI replug (Hyprland #16140)</span></li>
-  <li>You know when the Super key is locked. Fn+Super locks it in the keyboard's firmware; we just pass that through, so it no longer looks like a dead key. An on-screen toast for it is on the way. <span class="dim">was: stock Linux's hid-asus driver eats the lock report, so Super silently stops working</span></li>
+  <li>You know when the Super key is locked. Fn+Super locks it in the keyboard's firmware; we just pass that through, so it no longer looks like a dead key, and an on-screen toast says when it locks or unlocks. <span class="dim">was: stock Linux's hid-asus driver eats the lock report, so Super silently stops working</span></li>
   <li>The speakers go all the way up. <span class="dim">was: ALC285 Master hid 12.75 dB of volume. PipeWire also runs at realtime priority now (rtkit)</span></li>
 </ul>
 </details>
@@ -219,8 +219,13 @@ footer a { color: var(--muted); }
 <table>
   <tr><th>package</th><th>version</th><th>fixes</th><th>upstream</th></tr>
   <tr><td>linux-omarchy</td><td>7.2.8-9.1</td><td>Win-lock pass-through in hid-asus</td><td>sent to linux-input</td></tr>
-  <tr><td>nvidia-open-dkms</td><td>615.78.08-1.1</td><td>RTX no longer woken by battery ticks; hibernate powers off</td><td><a href="https://github.com/NVIDIA/open-gpu-kernel-modules/pull/1299">#1299</a>, <a href="https://github.com/NVIDIA/open-gpu-kernel-modules/pull/1412">#1412</a> open</td></tr>
+  <tr><td>nvidia-open-dkms</td><td>615.78.08-1.2</td><td>RTX no longer woken by battery ticks; hibernate powers off; nvkms semaphore leak</td><td><a href="https://github.com/NVIDIA/open-gpu-kernel-modules/pull/1299">#1299</a>, <a href="https://github.com/NVIDIA/open-gpu-kernel-modules/pull/1412">#1412</a>, <a href="https://github.com/NVIDIA/open-gpu-kernel-modules/pull/1368">#1368</a> open</td></tr>
   <tr><td>hyprland</td><td>0.56.2-4.1</td><td>render offset after HDMI replug</td><td><a href="https://github.com/hyprwm/Hyprland/pull/16140">#16140</a> merged, unreleased</td></tr>
+  <tr><td>omarchy, omarchy-settings</td><td>4.0.5-1.1</td><td>asusd hand-off, USB-C/barrel power policy, external power-manager owner, quiet fans on battery, iGPU video decode, full-scale speakers, rtkit</td><td><a href="https://github.com/omacom/omarchy/pull/15667">#15667</a>, <a href="https://github.com/omacom/omarchy/pull/15668">#15668</a>, <a href="https://github.com/omacom/omarchy/pull/15669">#15669</a> open; the rest in the <a href="https://github.com/omarchy-asus/omarchy-asus/issues/36">delta index</a></td></tr>
+  <tr><td>omarchy-asus-g16</td><td>1.0.0-1</td><td>touchpad wake, hibernate mode, nvidia-powerd start limit</td><td>G16-specific</td></tr>
+  <tr><td>asus-rog-nkey-winlock</td><td>0.1.0-1</td><td>Win-lock toast</td><td>G16-specific</td></tr>
+  <tr><td>asus-zephyrus-g16-control</td><td>0.1.0-1</td><td>G16 Control bar widget: LEDs, refresh rate, charge limit</td><td>G16-specific</td></tr>
+  <tr><td>omarchy-asus-keyring</td><td>20261018-1</td><td>the repo's signing key</td><td>n/a</td></tr>
 </table>
 </div>
 <div class="warn">Experimental, GA605 only. These replace <code>linux-omarchy</code> and the NVIDIA driver, so keep a second kernel (e.g. Arch <code>linux</code>) as a boot fallback. Key fingerprint <code>0B44FF7CCDD929F61BE4A2E436FE6B28AB24EC88</code>.</div>
@@ -235,11 +240,8 @@ footer a { color: var(--muted); }
 
 <h2 id="next">In progress</h2>
 <ul>
-  <li>omarchy-asus-keyring and one-step setup</li>
-  <li>nvidia-open-dkms 1.2 with #1368 (nvkms leak, 2.2 GB over 4.5 days per upstream)</li>
+  <li>one-step setup</li>
   <li>linux-omarchy 9.2: i2c-designware RX threshold (~52 IRQs per touchpad report today), GA605KM asus-armoury limits</li>
-  <li>omarchy-asus-g16: touchpad wake, hibernate mode, nvidia-powerd start limit</li>
-  <li>Win-lock toast and G16 Control widget</li>
   <li>daily rebuild against upstream in a clean chroot</li>
 </ul>
 <p class="dim">See the <a href="https://github.com/omarchy-asus/omarchy-asus/pulls">open pull requests</a>.</p>

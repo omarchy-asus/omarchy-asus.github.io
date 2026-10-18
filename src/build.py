@@ -1,8 +1,10 @@
 import json, sys
-g = sys.argv[1]
-t = open(f"{g}/template.html").read()
-t = t.replace("{{WORDMARK}}", open(f"{g}/wordmark.svg").read().strip())
-for k, v in json.load(open(f"{g}/charts.json")).items():
+from pathlib import Path
+g = Path(sys.argv[1])
+t = (g / "template.html").read_text(encoding="utf-8")
+t = t.replace("{{WORDMARK}}", (g / "wordmark.svg").read_text(encoding="utf-8").strip())
+for k, v in json.loads((g / "charts.json").read_text(encoding="utf-8")).items():
     t = t.replace("{{" + k + "}}", v)
-assert "{{" not in t
-open(sys.argv[2], "w").write(t)
+if "{{" in t:
+    sys.exit("build.py: unresolved {{...}} placeholder in the template")
+Path(sys.argv[2]).write_text(t, encoding="utf-8")
