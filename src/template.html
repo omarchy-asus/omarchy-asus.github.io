@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>omarchy-asus</title>
+<meta name="description" content="ASUS hardware support for Omarchy: patched kernel, NVIDIA and Hyprland builds in a signed pacman repo. Every fix measured on real hardware and sent upstream.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<script>
+  // Same trick as omarchy.org: press T to change the theme.
+  try { var t = localStorage.getItem("oa-theme"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}
+</script>
+<style>
+/* Theme tokens lifted from omarchy.org: white (light), matte-black and tokyo-night (dark). */
+:root {
+  color-scheme: light;
+  --bg: #fff; --bg-deep: #f5f5f5; --surface: #f5f5f5;
+  --border: #e8e8e8; --border-strong: #c0c0c0;
+  --text: #000; --text-2: #383838; --muted: #4a4a4a;
+  --brand: #6e6e6e; --brand-ink: #fff; --accent: #000;
+  --wm-a: #9c9c9c; --wm-b: #000;
+  --bar-before: #c3c3c3; --bar-after: #000; --bar-cost: #9c9c9c;
+  --sel: #c0c0c0;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="white"]):not([data-theme="tokyo-night"]) {
+    color-scheme: dark;
+    --bg: #121212; --bg-deep: #0d0d0d; --surface: #181818;
+    --border: #1e1e1e; --border-strong: #333;
+    --text: #eaeaea; --text-2: #bebebe; --muted: #8a8a8a;
+    --brand: #e68e0d; --brand-ink: #0c0e10; --accent: #e68e0d;
+    --wm-a: #4b4b4b; --wm-b: #e68e0d;
+    --bar-before: #3a3a3a; --bar-after: #e68e0d; --bar-cost: #8a8a8a;
+    --sel: #2a2a2a;
+  }
+}
+:root[data-theme="matte-black"] {
+  color-scheme: dark;
+  --bg: #121212; --bg-deep: #0d0d0d; --surface: #181818;
+  --border: #1e1e1e; --border-strong: #333;
+  --text: #eaeaea; --text-2: #bebebe; --muted: #8a8a8a;
+  --brand: #e68e0d; --brand-ink: #0c0e10; --accent: #e68e0d;
+  --wm-a: #4b4b4b; --wm-b: #e68e0d;
+  --bar-before: #3a3a3a; --bar-after: #e68e0d; --bar-cost: #8a8a8a;
+  --sel: #2a2a2a;
+}
+:root[data-theme="tokyo-night"] {
+  color-scheme: dark;
+  --bg: #1a1b26; --bg-deep: #13141c; --surface: #1f2230;
+  --border: #24283b; --border-strong: #414868;
+  --text: #c0caf5; --text-2: #a9b1d6; --muted: #8b93b8;
+  --brand: #9ece6a; --brand-ink: #0c0e10; --accent: #9ece6a;
+  --wm-a: #414868; --wm-b: #9ece6a;
+  --bar-before: #414868; --bar-after: #9ece6a; --bar-cost: #8b93b8;
+  --sel: #292e42;
+}
+
+* { box-sizing: border-box; }
+::selection { background: var(--sel); }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font: 14px/1.7 "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+.page { max-width: 860px; margin: 0 auto; padding: 0 20px 64px; }
+@media (max-width: 600px) { .page { padding: 0 16px 48px; } }
+a { color: var(--text); text-decoration: underline; text-decoration-color: var(--border-strong); text-underline-offset: 3px; }
+a:hover { color: var(--accent); text-decoration-color: currentColor; }
+code { background: var(--surface); border: 1px solid var(--border); padding: 0 4px; font-size: 0.95em; }
+
+header.bar { display: flex; align-items: center; gap: 20px; height: 56px; border-bottom: 1px solid var(--border); font-size: 13px; }
+header.bar .home { text-decoration: none; font-weight: 700; }
+header.bar nav { display: flex; gap: 18px; margin-left: auto; flex-wrap: wrap; }
+header.bar nav a { text-decoration: none; color: var(--text-2); }
+header.bar nav a:hover { color: var(--accent); }
+@media (max-width: 600px) { header.bar nav a.opt { display: none; } }
+
+.hero { padding: 64px 0 40px; text-align: center; }
+.wordmark { width: 100%; max-width: 720px; height: auto; display: block; margin: 0 auto 32px; }
+.wm-a { fill: var(--wm-a); } .wm-b { fill: var(--wm-b); }
+.hero h1 { font-size: 20px; font-weight: 600; margin: 0 0 8px; }
+.hero p { color: var(--text-2); margin: 0 auto; max-width: 62ch; }
+.btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin: 28px 0 0; }
+.btn { display: inline-block; padding: 6px 14px; border: 1px solid var(--border-strong); text-decoration: none; color: var(--text); background: var(--bg); font-weight: 600; }
+.btn:hover { border-color: var(--accent); color: var(--accent); }
+.btn.solid { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
+.btn.solid:hover { color: var(--brand-ink); filter: brightness(1.1); }
+.status { display: inline-block; margin-top: 24px; font-size: 12px; color: var(--muted); border: 1px solid var(--border); padding: 2px 10px; }
+
+h2 { font-size: 15px; font-weight: 700; margin: 48px 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+h2::before { content: "## "; color: var(--muted); font-weight: 400; }
+h3 { font-size: 14px; font-weight: 600; margin: 28px 0 6px; }
+p { margin: 0 0 12px; }
+.dim { color: var(--muted); }
+ul { margin: 0 0 12px; padding-left: 0; list-style: none; }
+ul li { padding-left: 2ch; text-indent: -2ch; margin-bottom: 4px; }
+ul li::before { content: "- "; color: var(--muted); }
+ul li .dim { display: block; text-indent: 0; }
+ul.check li { padding-left: 4ch; text-indent: -4ch; margin-bottom: 6px; }
+ul.check li::before { content: "[x] "; color: var(--accent); font-weight: 700; }
+ul.check b { font-weight: 700; }
+details.more { margin: 8px 0 0; }
+details.more summary { cursor: pointer; color: var(--text-2); margin-bottom: 10px; }
+details.more summary:hover { color: var(--accent); }
+ol { margin: 0 0 12px; padding-left: 3ch; }
+ol li { margin-bottom: 4px; }
+ol li::marker { color: var(--muted); }
+
+pre { margin: 0 0 4px; padding: 12px 14px; background: var(--bg-deep); border: 1px solid var(--border); overflow-x: auto; font: 13px/1.45 "JetBrains Mono", ui-monospace, monospace; color: var(--text-2); }
+pre .bb { color: var(--bar-before); }
+pre .ba { color: var(--bar-after); }
+pre .bc { color: var(--bar-cost); }
+pre .m { color: var(--muted); }
+.note { font-size: 12.5px; color: var(--muted); margin: 0 0 8px; }
+.key { font-size: 12.5px; color: var(--muted); margin: 0 0 6px; }
+.key i { font-style: normal; }
+.key .kb { color: var(--bar-before); } .key .ka { color: var(--bar-after); } .key .kc { color: var(--bar-cost); }
+
+table { border-collapse: collapse; width: 100%; margin: 0 0 12px; font-size: 13px; }
+th, td { border: 1px solid var(--border-strong); padding: 6px 10px; text-align: left; vertical-align: top; }
+th { background: var(--surface); font-weight: 600; }
+.tbl { overflow-x: auto; }
+
+.warn { border: 1px solid var(--border-strong); border-left: 3px solid var(--accent); padding: 10px 14px; margin: 12px 0; color: var(--text-2); background: var(--surface); }
+
+footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); display: flex; gap: 16px; flex-wrap: wrap; justify-content: space-between; }
+footer a { color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="bar">
+  <a class="home" href="#">omarchy-asus</a>
+  <nav>
+    <a class="opt" href="#works">features</a>
+    <a href="#numbers">numbers</a>
+    <a class="opt" href="#packages">packages</a>
+    <a class="opt" href="#docs">docs</a>
+    <a href="https://github.com/omarchy-asus/omarchy-asus">github</a>
+  </nav>
+</header>
+
+<section class="hero">
+  {{WORDMARK}}
+  <h1>Sane laptop defaults for ASUS on Omarchy.</h1>
+  <p>Install it and your ROG behaves like a laptop. No G-Helper, no Armoury Crate, no flipping modes by hand.</p>
+  <div class="btns">
+    <a class="btn solid" href="https://github.com/omarchy-asus/omarchy-asus/blob/main/LAPTOP-SETUP.md">Install</a>
+    <a class="btn" href="https://github.com/omarchy-asus/omarchy-asus">Source</a>
+    <a class="btn" href="https://github.com/omarchy-asus/omarchy-asus/issues/36">Tracker</a>
+  </div>
+  <span class="status">status: experimental · supported: ROG Zephyrus G16 GA605KM</span>
+</section>
+
+<h2 id="works">What you get</h2>
+<ul class="check">
+  <li><b>Great battery life.</b> About 9 W watching YouTube on battery.</li>
+  <li><b>The RTX sleeps when it should.</b> It wakes for a monitor or a game, not for nothing.</li>
+  <li><b>Hibernate that works.</b> Leave it asleep unplugged and it hibernates instead of dying.</li>
+  <li><b>Keyboard and Slash LED control.</b> Brightness and patterns, built in.</li>
+  <li><b>Quiet on battery.</b> Fans off at idle.</li>
+  <li><b>Chargers just work.</b> USB-C or barrel, it picks the right power mode.</li>
+  <li><b>Monitors just work.</b> Native resolution, and windows stay put after a replug.</li>
+  <li><b>Stays asleep in your bag.</b> The touchpad can't wake it.</li>
+  <li><b>See your Win-lock.</b> Fn+Super lock state shows up instead of a dead key.</li>
+  <li><b>Speakers at full volume.</b></li>
+</ul>
+<p class="dim">All of this runs on our G16 today. Some of it is still being packaged; see <a href="#next">in progress</a>.</p>
+<details class="more"><summary>What was broken before</summary>
+<p>Fn+Super, for example, is locked by the keyboard's firmware; stock Linux just eats the report. Most of these are like that: small, specific, and invisible until you trace them.</p>
+<ul>
+  <li>Close the lid, unplug, walk away. It's still there tomorrow: after 20 minutes asleep it hibernates, and opens back up where you left off. <span class="dim">was: the battery drained flat in sleep, and hibernate never actually powered off (NVIDIA #1412, HibernateMode=shutdown)</span></li>
+  <li>It stays asleep in your bag. Brushing the touchpad won't wake it; a click will. <span class="dim">was: 129k touchpad wake events in one boot (ASUF1209 wake disarmed)</span></li>
+  <li>The RTX stays out of the way. It wakes when you plug in a monitor or start a game, and sleeps the rest of the time. <span class="dim">was: also woken for 20–25 s every time the battery dropped 1 % (NVIDIA #1299)</span></li>
+  <li>Video on battery is cheap. YouTube and mpv play on the Radeon's video engine, so neither the RTX nor the CPU has to work for it. <span class="dim">was: software decode, or a woken RTX</span></li>
+  <li>It's quiet on battery. The fans stay off while you read, write or browse. <span class="dim">was: 2,000–3,800 rpm at idle. Temps under sustained load in this mode aren't logged yet</span></li>
+  <li>Plug in a charger and it just does the right thing, whether it's USB-C or the barrel. <span class="dim">was: asusd and power-profiles fighting over the profile and EPP</span></li>
+  <li>Plug in a monitor and it comes up at its native resolution, and your windows are where you left them after a replug. <span class="dim">was: windows rendered off-screen after an HDMI replug (Hyprland #16140)</span></li>
+  <li>You know when the Super key is locked. Fn+Super locks it in the keyboard's firmware; we just pass that through, so it no longer looks like a dead key, and an on-screen toast says when it locks or unlocks. <span class="dim">was: stock Linux's hid-asus driver eats the lock report, so Super silently stops working</span></li>
+  <li>The speakers go all the way up. <span class="dim">was: ALC285 Master hid 12.75 dB of volume. PipeWire also runs at realtime priority now (rtkit)</span></li>
+</ul>
+</details>
+
+<h2 id="numbers">Numbers</h2>
+<p>Measured on a GA605KM (Ryzen AI 7 350, RTX 5060 Laptop), mostly on battery, with repeated A/B runs where noted. The fixes were applied locally on kernel 7.2.5 and nvidia-open 610; the packaged builds carry the same patches on newer bases and haven't been installed yet.</p>
+<p class="key"><i class="kb">██</i> before &nbsp; <i class="ka">██</i> after</p>
+
+<h3>RTX wake-ups per 1 % battery drop</h3>
+<pre>{{wake}}</pre>
+<p class="note">idle desktop on battery, 42 → 39 %. Average drain didn't move outside noise, so this is a wake-up count, not a watt claim.</p>
+
+<h3>Fan speed at idle on battery</h3>
+<pre>{{fans}}</pre>
+<p class="note">asus-wmi quiet + amd-pmf balanced, idle at 28 °C (the balanced curve doesn't need fans below 54 °C, yet ran them anyway). Median −0.79 W over 4 cycles. Bursts unchanged: 5.04 GHz, 54 W all-core peak.</p>
+<p class="note">Do temps climb? Fair question, and not answered yet. This is the EC's quiet fan table rather than a fan stop, but we haven't logged temperatures under sustained load on battery in this mode. That run is next, and the result goes here either way.</p>
+
+<h3>Background overhead (each before = 100)</h3>
+<pre>{{overhead}}</pre>
+<p class="note">daemon CPU: 120 s samples. wakeups and helpers: single samples or 3 warm runs.</p>
+
+<h3>AV1 1080p60 decode, 300 frames, CPU time</h3>
+<pre>{{decode}}</pre>
+<p class="note">mean of 3 runs. mpv playback: 4–9× less CPU across H.264, HEVC, VP9 and AV1.</p>
+
+<h3>Package power under a 16-thread load, 25 W limit set</h3>
+<pre>{{ppt}}</pre>
+<p class="note">barrel charger, performance profile. Firmware ignores PPT unless the custom fan curve is enabled.</p>
+
+<h3>Battery draw change per tweak, tried one at a time</h3>
+<p class="key"><i class="ka">██</i> shipped &nbsp; <i class="kb">██</i> too small &nbsp; <i class="kc">██</i> rejected</p>
+<pre>{{tweaks}}</pre>
+<p class="note">We keep the ones that pay. YouTube on battery went from ~12 W to ~9.2 W with several fixes combined; we don't credit that to any one of them.</p>
+
+<h2 id="packages">Packages</h2>
+<p>Served from the <a href="https://github.com/omarchy-asus/omarchy-asus/releases/tag/x86_64">x86_64 release</a>. Versions are upstream's plus <code>.1</code>, so they install over stock and step aside when upstream catches up.</p>
+<div class="tbl">
+<table>
+  <tr><th>package</th><th>version</th><th>fixes</th><th>upstream</th></tr>
+  <tr><td>linux-omarchy</td><td>7.2.8-9.1</td><td>Win-lock pass-through in hid-asus</td><td>sent to linux-input</td></tr>
+  <tr><td>nvidia-open-dkms</td><td>615.78.08-1.2</td><td>RTX no longer woken by battery ticks; hibernate powers off; nvkms semaphore leak</td><td><a href="https://github.com/NVIDIA/open-gpu-kernel-modules/pull/1299">#1299</a>, <a href="https://github.com/NVIDIA/open-gpu-kernel-modules/pull/1412">#1412</a>, <a href="https://github.com/NVIDIA/open-gpu-kernel-modules/pull/1368">#1368</a> open</td></tr>
+  <tr><td>hyprland</td><td>0.56.2-4.1</td><td>render offset after HDMI replug</td><td><a href="https://github.com/hyprwm/Hyprland/pull/16140">#16140</a> merged, unreleased</td></tr>
+  <tr><td>omarchy, omarchy-settings</td><td>4.0.5-1.1</td><td>asusd hand-off, USB-C/barrel power policy, external power-manager owner, quiet fans on battery, iGPU video decode, full-scale speakers, rtkit</td><td><a href="https://github.com/omacom/omarchy/pull/15667">#15667</a>, <a href="https://github.com/omacom/omarchy/pull/15668">#15668</a>, <a href="https://github.com/omacom/omarchy/pull/15669">#15669</a> open; the rest in the <a href="https://github.com/omarchy-asus/omarchy-asus/issues/36">delta index</a></td></tr>
+  <tr><td>omarchy-asus-g16</td><td>1.0.0-1</td><td>touchpad wake, hibernate mode, nvidia-powerd start limit</td><td>G16-specific</td></tr>
+  <tr><td>asus-rog-nkey-winlock</td><td>0.1.0-1</td><td>Win-lock toast</td><td>G16-specific</td></tr>
+  <tr><td>asus-zephyrus-g16-control</td><td>0.1.0-1</td><td>G16 Control bar widget: LEDs, refresh rate, charge limit</td><td>G16-specific</td></tr>
+  <tr><td>omarchy-asus-keyring</td><td>20261018-1</td><td>the repo's signing key</td><td>n/a</td></tr>
+</table>
+</div>
+<div class="warn">Experimental, GA605 only. These replace <code>linux-omarchy</code> and the NVIDIA driver, so keep a second kernel (e.g. Arch <code>linux</code>) as a boot fallback. Key fingerprint <code>0B44FF7CCDD929F61BE4A2E436FE6B28AB24EC88</code>.</div>
+
+<h2 id="how">How it works</h2>
+<ol>
+  <li>Write the fix the way upstream would, gated on the hardware it's for.</li>
+  <li>Measure it on the laptop. If it doesn't measure up, it doesn't ship.</li>
+  <li>Ship a signed build, and send the patch upstream with a link back.</li>
+  <li>When upstream releases it, delete ours. If a rebuild fails, withdraw it and stock flows through.</li>
+</ol>
+
+<h2 id="next">In progress</h2>
+<ul>
+  <li>one-step setup</li>
+  <li>linux-omarchy 9.2: i2c-designware RX threshold (~52 IRQs per touchpad report today), GA605KM asus-armoury limits</li>
+  <li>daily rebuild against upstream in a clean chroot</li>
+</ul>
+<p class="dim">See the <a href="https://github.com/omarchy-asus/omarchy-asus/pulls">open pull requests</a>.</p>
+
+<h2 id="docs">Docs</h2>
+<ul>
+  <li><a href="https://github.com/omarchy-asus/omarchy-asus">omarchy-asus/omarchy-asus</a>: recipes, patches, build and publish tooling</li>
+  <li><a href="https://github.com/omarchy-asus/omarchy-asus/blob/main/LAPTOP-SETUP.md">LAPTOP-SETUP.md</a>: add the repo, trust the key, back out</li>
+  <li><a href="https://github.com/omarchy-asus/omarchy-asus/issues/36">delta index</a>: one issue per fix, with status and a test plan</li>
+  <li><a href="https://github.com/omarchy-asus/omarchy-asus/releases/tag/x86_64">x86_64 release</a>: signed db and packages</li>
+</ul>
+
+<h2>Contributing</h2>
+<p>Got an ASUS laptop? <a href="https://github.com/omarchy-asus/omarchy-asus/issues/new">Open an issue</a> with the output of <code>cat /sys/class/dmi/id/product_name</code>, <code>uname -r</code> and <code>omarchy version</code>, and what's broken. Small PRs tested on real hardware are welcome.</p>
+
+<footer>
+  <span>Unofficial. Not affiliated with Basecamp, Omacom, NVIDIA or ASUS. Built on <a href="https://omarchy.org">Omarchy</a>.</span>
+  <span>press <code>T</code> to change the theme</span>
+</footer>
+
+</div>
+<script>
+  (function () {
+    var themes = ["white", "matte-black", "tokyo-night"];
+    addEventListener("keydown", function (e) {
+      if (e.key !== "t" && e.key !== "T") return;
+      if (e.ctrlKey || e.metaKey || e.altKey || /input|textarea/i.test(e.target.tagName)) return;
+      var cur = document.documentElement.getAttribute("data-theme") ||
+        (matchMedia("(prefers-color-scheme: dark)").matches ? "matte-black" : "white");
+      var next = themes[(themes.indexOf(cur) + 1) % themes.length];
+      document.documentElement.setAttribute("data-theme", next);
+      try { localStorage.setItem("oa-theme", next); } catch (e) {}
+    });
+  })();
+</script>
+</body>
+</html>
