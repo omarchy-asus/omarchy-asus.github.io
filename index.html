@@ -151,7 +151,7 @@ footer a { color: var(--muted); }
     <a class="btn" href="https://github.com/omarchy-asus/omarchy-asus">Source</a>
     <a class="btn" href="https://github.com/omarchy-asus/omarchy-asus/issues/36">Tracker</a>
   </div>
-  <span class="status">status: experimental · supported: ROG Zephyrus G16 GA605KM</span>
+  <span class="status">status: experimental · for: ROG Zephyrus G16 / G14 · tested: GA605KM</span>
 </section>
 
 <h2 id="works">What you get</h2>
@@ -168,6 +168,7 @@ footer a { color: var(--muted); }
   <li><b>Speakers at full volume.</b></li>
 </ul>
 <p class="dim">All of this runs on our G16 today. Some of it is still being packaged; see <a href="#next">in progress</a>.</p>
+<p class="dim">The fixes target the Zephyrus G16 and G14 family. Most of the stack (asus-wmi, hid-asus, the NVIDIA driver, hibernate, Hyprland) is shared across ASUS models, so other ROG and TUF laptops are welcome too; see <a href="#contributing">contributing</a>.</p>
 <details class="more"><summary>What was broken before</summary>
 <p>Fn+Super, for example, is locked by the keyboard's firmware; stock Linux just eats the report. Most of these are like that: small, specific, and invisible until you trace them.</p>
 <ul>
@@ -265,7 +266,7 @@ teo idle governor                          │<span class="bc">█████�
   <tr><td>omarchy-asus-keyring</td><td>20261018-1</td><td>the repo's signing key</td><td>n/a</td></tr>
 </table>
 </div>
-<div class="warn">Experimental, GA605 only. These replace <code>linux-omarchy</code> and the NVIDIA driver, so keep a second kernel (e.g. Arch <code>linux</code>) as a boot fallback. Key fingerprint <code>0B44FF7CCDD929F61BE4A2E436FE6B28AB24EC88</code>.</div>
+<div class="warn">Experimental, tested on the GA605 only. These replace <code>linux-omarchy</code> and the NVIDIA driver, so keep a second kernel (e.g. Arch <code>linux</code>) as a boot fallback. Key fingerprint <code>0B44FF7CCDD929F61BE4A2E436FE6B28AB24EC88</code>.</div>
 
 <h2 id="how">How it works</h2>
 <ol>
@@ -291,8 +292,8 @@ teo idle governor                          │<span class="bc">█████�
   <li><a href="https://github.com/omarchy-asus/omarchy-asus/releases/tag/x86_64">x86_64 release</a>: signed db and packages</li>
 </ul>
 
-<h2>Contributing</h2>
-<p>Got an ASUS laptop? <a href="https://github.com/omarchy-asus/omarchy-asus/issues/new">Open an issue</a> with the output of <code>cat /sys/class/dmi/id/product_name</code>, <code>uname -r</code> and <code>omarchy version</code>, and what's broken. Small PRs tested on real hardware are welcome.</p>
+<h2 id="contributing">Contributing</h2>
+<p>Got a G16, a G14, or another ASUS laptop? A lot is shared between models, so your fix may already be here, or yours may help ours. <a href="https://github.com/omarchy-asus/omarchy-asus/issues/new">Open an issue</a> with the output of <code>cat /sys/class/dmi/id/product_name</code>, <code>uname -r</code> and <code>omarchy version</code>, and what's broken. Small PRs tested on real hardware are welcome.</p>
 
 <footer>
   <span>Unofficial. Not affiliated with Basecamp, Omacom, NVIDIA or ASUS. Built on <a href="https://omarchy.org">Omarchy</a>.</span>
