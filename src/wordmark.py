@@ -1,4 +1,5 @@
-# Blocky 5x7 wordmark as one SVG path per word group.
+# 5x7 wordmark drawn as an LED dot matrix, like the Slash strip on the G16 lid.
+# Every cell is a dot; lit dots carry a sweep index (--d) for the one-time load animation.
 F = {
  "O": ["01110","11011","11011","11011","11011","11011","01110"],
  "M": ["11011","11111","11111","10101","10001","10001","10001"],
@@ -11,16 +12,19 @@ F = {
  "U": ["11011","11011","11011","11011","11011","11011","01110"],
  "-": ["00000","00000","00000","01110","00000","00000","00000"],
 }
-def word(s, x0):
+def word(s, x0, cls):
     d = []; x = x0
     for ch in s:
         for r, row in enumerate(F[ch]):
             for c, bit in enumerate(row):
-                if bit == "1": d.append(f"M{x+c} {r}h1v1h-1z")
+                if bit == "1":
+                    d.append(f'<circle class="on {cls}" style="--d:{x + c + 6 - r}" cx="{x+c}" cy="{r}" r=".4"/>')
+                else:
+                    d.append(f'<circle cx="{x+c}" cy="{r}" r=".4"/>')
         x += 6
     return "".join(d), x
-a, x = word("OMARCHY", 0)
-b, x2 = word("-", x)
-c, x3 = word("ASUS", x2)
+a, x = word("OMARCHY", 0, "wm-a")
+b, x2 = word("-", x, "wm-a")
+c, x3 = word("ASUS", x2, "wm-b")
 w = x3 - 1
-print(f'<svg class="wordmark" viewBox="-0.5 -0.5 {w+1} 8" role="img" aria-label="omarchy-asus" shape-rendering="crispEdges"><path class="wm-a" d="{a}{b}"/><path class="wm-b" d="{c}"/></svg>')
+print(f'<svg class="wordmark" viewBox="-0.5 -0.5 {w} 7" role="img" aria-label="omarchy-asus">{a}{b}{c}</svg>')
