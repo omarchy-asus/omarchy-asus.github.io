@@ -208,7 +208,7 @@ footer a { color: var(--muted); }
   <li><h3>Hibernate that works</h3><p>Close the lid, unplug, walk away. After 20 minutes asleep it hibernates, and opens back up where you left off.</p><p class="was">was: the battery drained flat in sleep, and hibernate never actually powered off (NVIDIA #1412, HibernateMode=shutdown)</p></li>
   <li><h3>The RTX sleeps when it should</h3><p>It wakes when you plug in a monitor or start a game, and sleeps the rest of the time.</p><p class="was">was: woken for 20–25 s every time the battery dropped 1 % (NVIDIA #1299)</p></li>
   <li><h3>Video decodes on the iGPU</h3><p>YouTube and mpv decode on the Radeon iGPU's video engine, the most efficient place for it, so the RTX stays asleep and the CPU stays idle. About 9 W for YouTube on battery.</p><p class="was">was: 14 W, with software decode or a woken RTX</p></li>
-  <li><h3>Quiet on battery</h3><p>The fans stay off while you read, write or browse.</p><p class="was">was: 2,000–3,800 rpm at idle. Temps under sustained load in this mode aren't logged yet</p></li>
+  <li><h3>Quiet on battery</h3><p>The fans stay off while you read, write or browse.</p><p class="was">was: 2,000–3,800 rpm at idle. Under sustained load it now holds 86 °C instead of throttling at 95 °C, for about 6 % lower clocks</p></li>
   <li><h3>Stays asleep in your bag</h3><p>Brushing the touchpad won't wake it; a click will.</p><p class="was">was: 129k touchpad wake events in one boot (ASUF1209 wake disarmed)</p></li>
   <li><h3>Chargers that work</h3><p>Game on USB-C or a smaller barrel charger without stutter. It holds charging while the charger can't keep up, so power stays steady.</p><p class="was">was: on USB-C, the adapter flapped on and off about once a second, charging toggled with it, and the EC clamped the CPU to 735 MHz</p></li>
   <li><h3>Monitors just work</h3><p>Native resolution, and your windows are where you left them after a replug.</p><p class="was">was: windows rendered off-screen after an HDMI replug (Hyprland #16140)</p></li>
@@ -228,7 +228,11 @@ footer a { color: var(--muted); }
 <h3>Fan speed at idle on battery</h3>
 <pre>{{fans}}</pre>
 <p class="note">asus-wmi quiet + amd-pmf balanced, idle at 28 °C (the balanced curve doesn't need fans below 54 °C, yet ran them anyway). Median −0.79 W over 4 cycles. Bursts unchanged: 5.04 GHz, 54 W all-core peak.</p>
-<p class="note">Do temps climb? Fair question, and not answered yet. This is the EC's quiet fan table rather than a fan stop, but we haven't logged temperatures under sustained load on battery in this mode. That run is next, and the result goes here either way.</p>
+<p class="note">Do temps climb? No. This is the EC's quiet fan table rather than a fan stop: under load the fans start at 86 °C and hold it there.</p>
+
+<h3>Sustained all-core load on battery (each before = 100)</h3>
+<pre>{{quietload}}</pre>
+<p class="note">8 min of all-core load (16 busy loops) per fan table, back to back on battery at 67 %, kernel 7.2.8-9.3, sampled every 5 s; steady state is the median of the last 2 min. Before is the balanced table, after the quiet one, both with amd-pmf balanced. Repeated on 7.2.8-9.4 (86.0 °C at 31 W), and in 60 s loads after two hibernate resumes (86.1 °C peak at 32–33 W). <a href="https://github.com/omarchy-asus/omarchy-asus/issues/42">#42</a></p>
 
 <h3>Background overhead (each before = 100)</h3>
 <pre>{{overhead}}</pre>
