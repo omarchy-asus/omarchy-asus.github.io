@@ -22,7 +22,7 @@
   --brand: #6e6e6e; --brand-ink: #fff; --accent: #000;
   --wm-a: #9c9c9c; --wm-b: #000;
   --bar-before: #c3c3c3; --bar-after: #000; --bar-cost: #9c9c9c;
-  --sel: #c0c0c0;
+  --sel: #c0c0c0; --led-off: #f1f1f1;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="white"]):not([data-theme="tokyo-night"]) {
@@ -33,7 +33,7 @@
     --brand: #e68e0d; --brand-ink: #0c0e10; --accent: #e68e0d;
     --wm-a: #4b4b4b; --wm-b: #e68e0d;
     --bar-before: #3a3a3a; --bar-after: #e68e0d; --bar-cost: #8a8a8a;
-    --sel: #2a2a2a;
+    --sel: #2a2a2a; --led-off: #1c1c1c;
   }
 }
 :root[data-theme="matte-black"] {
@@ -44,7 +44,7 @@
   --brand: #e68e0d; --brand-ink: #0c0e10; --accent: #e68e0d;
   --wm-a: #4b4b4b; --wm-b: #e68e0d;
   --bar-before: #3a3a3a; --bar-after: #e68e0d; --bar-cost: #8a8a8a;
-  --sel: #2a2a2a;
+  --sel: #2a2a2a; --led-off: #1c1c1c;
 }
 :root[data-theme="tokyo-night"] {
   color-scheme: dark;
@@ -54,7 +54,7 @@
   --brand: #9ece6a; --brand-ink: #0c0e10; --accent: #9ece6a;
   --wm-a: #414868; --wm-b: #9ece6a;
   --bar-before: #414868; --bar-after: #9ece6a; --bar-cost: #8b93b8;
-  --sel: #292e42;
+  --sel: #292e42; --led-off: #212331;
 }
 
 * { box-sizing: border-box; }
@@ -78,7 +78,24 @@ header.bar nav a:hover { color: var(--accent); }
 
 .hero { padding: 64px 0 40px; text-align: center; }
 .wordmark { width: 100%; max-width: 720px; height: auto; display: block; margin: 0 auto 32px; }
-.wm-a { fill: var(--wm-a); } .wm-b { fill: var(--wm-b); }
+.wordmark circle { fill: var(--led-off); }
+.wordmark .wm-a { fill: var(--wm-a); } .wordmark .wm-b { fill: var(--wm-b); }
+.wordmark .on { animation: led 420ms ease-out both; animation-delay: calc(var(--d) * 14ms + 150ms); }
+@keyframes led { 0% { fill: var(--led-off); } 40% { fill: var(--text); } }
+@media (prefers-reduced-motion: reduce) { .wordmark .on { animation: none; } }
+
+.fit { max-width: 62ch; margin: 0 auto; padding: 14px 16px; border: 1px solid var(--border); background: var(--bg-deep); text-align: left; }
+.fit p { margin: 0; }
+.fit label { display: block; color: var(--text-2); margin-bottom: 8px; }
+.fit .cmd { display: block; color: var(--muted); font-size: 12.5px; }
+.fit .line { display: flex; gap: 1ch; align-items: baseline; }
+.fit .line span { color: var(--accent); font-weight: 700; }
+.fit input { flex: 1; min-width: 0; font: inherit; color: var(--text); background: transparent; border: 0; border-bottom: 1px solid var(--border-strong); padding: 2px 0; }
+.fit input:focus { outline: none; border-bottom-color: var(--accent); }
+.fit output { display: block; margin-top: 10px; color: var(--text-2); }
+.fit output:empty { display: none; }
+.fit output b { color: var(--text); }
+a:focus-visible, .btn:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .hero h1 { font-size: 20px; font-weight: 600; margin: 0 0 8px; }
 .hero p { color: var(--text-2); margin: 0 auto; max-width: 62ch; }
 .btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin: 28px 0 0; }
@@ -153,6 +170,12 @@ footer a { color: var(--muted); }
   </div>
   <span class="status">status: experimental · for: ROG Zephyrus G16 / G14 · tested: GA605KM</span>
 </section>
+
+<div class="fit">
+  <label for="model">Will it work on mine? <span class="cmd">paste the output of <code>cat /sys/class/dmi/id/product_name</code></span></label>
+  <p class="line"><span aria-hidden="true">$</span><input id="model" type="text" autocomplete="off" spellcheck="false" placeholder="ROG Zephyrus G16 GA605KM"></p>
+  <output for="model" id="model-out" aria-live="polite"></output>
+</div>
 
 <h2 id="works">What you get</h2>
 <ul class="check">
@@ -277,6 +300,40 @@ footer a { color: var(--muted); }
       try { localStorage.setItem("oa-theme", next); } catch (e) {}
     });
   })();
+</script>
+<script>
+// Model check: tells a visitor how close their laptop is to the one we test on.
+(function () {
+  var f = document.getElementById("model"), out = document.getElementById("model-out");
+  var amd = " The AMD-only fixes (amd-pmf, Radeon video decode) don't apply to Intel models.";
+  function verdict(raw) {
+    var s = raw.trim().toUpperCase();
+    if (!s) return null;
+    var intel = /\bGU\d/.test(s);
+    if (/GA605KM/.test(s)) return ["Tested.", "This is the laptop every number on this page comes from."];
+    if (/GA605/.test(s)) return ["Same G16 chassis as ours.", "A different CPU or GPU config; expect nearly everything to apply."];
+    var m16 = /ZEPHYRUS M16/.test(s);
+    if (!m16 && /GA605|GU605|GU603V|ZEPHYRUS G16/.test(s)) return ["Zephyrus G16 family.", "The ASUS, NVIDIA and power fixes are shared; it's untested here." + (intel ? amd : "")];
+    if (/GA40[1-3]|ZEPHYRUS G14/.test(s)) return ["Zephyrus G14 family.", "Most fixes should carry over; the NVIDIA ones only if yours has an RTX. It's untested here."];
+    if (/ROG|TUF|STRIX|ZEPHYRUS|FLOW|ZENBOOK|VIVOBOOK|PROART|ASUS|\b[A-Z]{2}\d{3}/.test(s)) return ["Other ASUS.", "asus-wmi, hid-asus and the NVIDIA fixes are common across ASUS laptops. Some will apply; we haven't tested it."];
+    return ["Not an ASUS product name.", "Run the command on the laptop itself and paste what it prints."];
+  }
+  function issue(model) {
+    var body = "product_name: " + model + "\nuname -r: \nomarchy version: \n\nWhat's broken:\n";
+    return "https://github.com/omarchy-asus/omarchy-asus/issues/new?title=" + encodeURIComponent("Model report: " + model) + "&body=" + encodeURIComponent(body);
+  }
+  f.addEventListener("input", function () {
+    var v = verdict(f.value);
+    out.textContent = "";
+    if (!v) return;
+    var b = document.createElement("b"); b.textContent = v[0];
+    out.append(b, " " + v[1] + " ");
+    if (v[0] !== "Not an ASUS product name.") {
+      var a = document.createElement("a"); a.href = issue(f.value.trim()); a.textContent = "Report your model";
+      out.append(a);
+    }
+  });
+})();
 </script>
 </body>
 </html>
