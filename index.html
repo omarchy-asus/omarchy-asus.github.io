@@ -349,8 +349,9 @@ teo idle governor                          │<span class="bc">█████�
     var intel = /\bGU\d/.test(s);
     if (/GA605KM/.test(s)) return ["Tested.", "This is the laptop every number on this page comes from."];
     if (/GA605/.test(s)) return ["Same G16 chassis as ours.", "A different CPU or GPU config; expect nearly everything to apply."];
-    if (/G[AU]60[3-5]|ZEPHYRUS G16/.test(s)) return ["Zephyrus G16 family.", "The ASUS, NVIDIA and power fixes are shared; it's untested here." + (intel ? amd : "")];
-    if (/G[AU]40[1-3]|ZEPHYRUS G14/.test(s)) return ["Zephyrus G14 family.", "AMD and NVIDIA like ours, so most fixes should carry over; it's untested here." + (intel ? amd : "")];
+    var m16 = /ZEPHYRUS M16/.test(s);
+    if (!m16 && /GA605|GU605|GU603V|ZEPHYRUS G16/.test(s)) return ["Zephyrus G16 family.", "The ASUS, NVIDIA and power fixes are shared; it's untested here." + (intel ? amd : "")];
+    if (/GA40[1-3]|ZEPHYRUS G14/.test(s)) return ["Zephyrus G14 family.", "AMD and NVIDIA like ours, so most fixes should carry over; it's untested here." + (intel ? amd : "")];
     if (/ROG|TUF|STRIX|ZEPHYRUS|FLOW|ZENBOOK|VIVOBOOK|PROART|ASUS|\b[A-Z]{2}\d{3}/.test(s)) return ["Other ASUS.", "asus-wmi, hid-asus and the NVIDIA fixes are common across ASUS laptops. Some will apply; we haven't tested it."];
     return ["Not an ASUS product name.", "Run the command on the laptop itself and paste what it prints."];
   }
