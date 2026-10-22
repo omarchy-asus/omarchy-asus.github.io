@@ -196,7 +196,7 @@ footer a { color: var(--muted); }
   </div>
   <p class="status">Experimental. Built for the ROG Zephyrus <b>G16</b> and <b>G14</b>, tested on a <b>GA605KM</b>. Other ASUS laptops share most of it.</p>
   <div class="proof">
-    <div><span class="v"><s>~12 W</s>9.2 W</span><p>YouTube on battery, all fixes combined</p></div>
+    <div><span class="v"><s>14 W</s>9.2 W</span><p>YouTube on battery, all fixes combined</p></div>
     <div><span class="v"><s>100 %</s>0 %</span><p>of 1 % battery drops that woke the RTX</p></div>
     <div><span class="v"><s>3,800</s>0 rpm</span><p>fastest fan at idle on battery</p></div>
   </div>
@@ -206,10 +206,10 @@ footer a { color: var(--muted); }
 <ul class="fixes">
   <li><h3>Hibernate that works</h3><p>Close the lid, unplug, walk away. After 20 minutes asleep it hibernates, and opens back up where you left off.</p><p class="was">was: the battery drained flat in sleep, and hibernate never actually powered off (NVIDIA #1412, HibernateMode=shutdown)</p></li>
   <li><h3>The RTX sleeps when it should</h3><p>It wakes when you plug in a monitor or start a game, and sleeps the rest of the time.</p><p class="was">was: woken for 20–25 s every time the battery dropped 1 % (NVIDIA #1299)</p></li>
-  <li><h3>Cheap video on battery</h3><p>YouTube and mpv play on the Radeon's video engine, so neither the RTX nor the CPU works for it. About 9 W for YouTube.</p><p class="was">was: software decode, or a woken RTX</p></li>
+  <li><h3>Video decodes on the iGPU</h3><p>YouTube and mpv decode on the Radeon iGPU's video engine, the most efficient place for it, so the RTX stays asleep and the CPU stays idle. About 9 W for YouTube on battery.</p><p class="was">was: 14 W, with software decode or a woken RTX</p></li>
   <li><h3>Quiet on battery</h3><p>The fans stay off while you read, write or browse.</p><p class="was">was: 2,000–3,800 rpm at idle. Temps under sustained load in this mode aren't logged yet</p></li>
   <li><h3>Stays asleep in your bag</h3><p>Brushing the touchpad won't wake it; a click will.</p><p class="was">was: 129k touchpad wake events in one boot (ASUF1209 wake disarmed)</p></li>
-  <li><h3>Chargers just work</h3><p>USB-C or barrel, it picks the right power mode.</p><p class="was">was: asusd and power-profiles fighting over the profile and EPP</p></li>
+  <li><h3>Chargers that work</h3><p>Game on USB-C or a smaller barrel charger without stutter. It holds charging while the charger can't keep up, so power stays steady.</p><p class="was">was: on USB-C, the adapter flapped on and off about once a second, charging toggled with it, and the EC clamped the CPU to 735 MHz</p></li>
   <li><h3>Monitors just work</h3><p>Native resolution, and your windows are where you left them after a replug.</p><p class="was">was: windows rendered off-screen after an HDMI replug (Hyprland #16140)</p></li>
   <li><h3>You can see your Win-lock</h3><p>Fn+Super locks Super in the keyboard's firmware. We pass the state through and show a toast, so it no longer looks like a dead key.</p><p class="was">was: stock hid-asus ate the lock report, so Super silently stopped working</p></li>
   <li><h3>Keyboard and Slash LEDs</h3><p>Brightness and patterns from the G16 Control widget in the bar.</p></li>
@@ -244,7 +244,7 @@ footer a { color: var(--muted); }
 <h3>Battery draw change per tweak, tried one at a time</h3>
 <p class="key"><i class="ka">██</i> shipped &nbsp; <i class="kb">██</i> too small &nbsp; <i class="kc">██</i> rejected</p>
 <pre>{{tweaks}}</pre>
-<p class="note">We keep the ones that pay. YouTube on battery went from ~12 W to ~9.2 W with several fixes combined; we don't credit that to any one of them.</p>
+<p class="note">We keep the ones that pay. YouTube on battery went from 14 W to ~9.2 W with several fixes combined; we don't credit that to any one of them.</p>
 
 <h2 id="packages">Packages</h2>
 <p class="measure">Served from the <a href="https://github.com/omarchy-asus/omarchy-asus/releases/tag/x86_64">x86_64 release</a>. Versions are upstream's plus <code>.1</code>, so they install over stock and step aside when upstream catches up.</p>
