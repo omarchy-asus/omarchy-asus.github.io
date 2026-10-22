@@ -53,6 +53,12 @@ charts["fans"] = paired([
     ("fan 2", 1800, 0, "1800 rpm", "0 rpm"),
     ("fan 3", 3800, 0, "3800 rpm", "0 rpm  (7 in rerun)"),
 ], 3800, 6)
+charts["quietload"] = paired([
+    ("tctl, steady", 95.0, 86.0, "95.0 °C  throttling", "86.0 °C  not throttled"),
+    ("apu power", 39.2, 33.3, "39.2 W", "33.3 W"),
+    ("all-core clock", 3421, 3206, "3421 MHz", "3206 MHz  (−6 %)"),
+    ("fans, peak", 6800, 4200, "6800 rpm  from the first second", "4200 rpm  from 86 °C"),
+], 100, 14, index=True)
 charts["overhead"] = paired([
     ("power daemons, cpu", 2.4, 0.27, "2.4 % of a core", "0.27 %"),
     ("rog-power", 1.6, 0.25, "1.6 %", "0.25 %"),
