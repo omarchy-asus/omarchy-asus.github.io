@@ -59,89 +59,115 @@
 
 * { box-sizing: border-box; }
 ::selection { background: var(--sel); }
+html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0; background: var(--bg); color: var(--text);
-  font: 14px/1.7 "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  font: 16px/1.65 "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
 }
-.page { max-width: 860px; margin: 0 auto; padding: 0 20px 64px; }
-@media (max-width: 600px) { .page { padding: 0 16px 48px; } }
+.page { max-width: 1120px; margin: 0 auto; padding: 0 32px 80px; }
+@media (max-width: 600px) { .page { padding: 0 16px 56px; } body { font-size: 15px; } }
 a { color: var(--text); text-decoration: underline; text-decoration-color: var(--border-strong); text-underline-offset: 3px; }
 a:hover { color: var(--accent); text-decoration-color: currentColor; }
-code { background: var(--surface); border: 1px solid var(--border); padding: 0 4px; font-size: 0.95em; }
+a:focus-visible, .btn:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+code { background: var(--surface); border: 1px solid var(--border); padding: 0 5px; font-size: 0.92em; overflow-wrap: anywhere; }
+.measure { max-width: 72ch; }
 
-header.bar { display: flex; align-items: center; gap: 20px; height: 56px; border-bottom: 1px solid var(--border); font-size: 13px; }
+header.bar { display: flex; align-items: center; gap: 24px; height: 64px; border-bottom: 1px solid var(--border); font-size: 15px; }
 header.bar .home { text-decoration: none; font-weight: 700; }
-header.bar nav { display: flex; gap: 18px; margin-left: auto; flex-wrap: wrap; }
+header.bar nav { display: flex; gap: 22px; margin-left: auto; flex-wrap: wrap; }
 header.bar nav a { text-decoration: none; color: var(--text-2); }
 header.bar nav a:hover { color: var(--accent); }
-@media (max-width: 600px) { header.bar nav a.opt { display: none; } }
+@media (max-width: 700px) { header.bar nav a.opt { display: none; } }
 
-.hero { padding: 64px 0 40px; text-align: center; }
-.wordmark { width: 100%; max-width: 720px; height: auto; display: block; margin: 0 auto 32px; }
+/* Hero: the LED masthead, then the claim, then the proof. */
+.hero { padding: 56px 0 24px; }
+.wordmark { width: 100%; height: auto; display: block; margin: 0 0 56px; }
 .wordmark circle { fill: var(--led-off); }
 .wordmark .wm-a { fill: var(--wm-a); } .wordmark .wm-b { fill: var(--wm-b); }
 .wordmark .on { animation: led 420ms ease-out both; animation-delay: calc(var(--d) * 14ms + 150ms); }
 @keyframes led { 0% { fill: var(--led-off); } 40% { fill: var(--text); } }
 @media (prefers-reduced-motion: reduce) { .wordmark .on { animation: none; } }
-
-.fit { max-width: 62ch; margin: 0 auto; padding: 14px 16px; border: 1px solid var(--border); background: var(--bg-deep); text-align: left; }
-.fit p { margin: 0; }
-.fit label { display: block; color: var(--text-2); margin-bottom: 8px; }
-.fit .cmd { display: block; color: var(--muted); font-size: 12.5px; }
-.fit .line { display: flex; gap: 1ch; align-items: baseline; }
-.fit .line span { color: var(--accent); font-weight: 700; }
-.fit input { flex: 1; min-width: 0; font: inherit; color: var(--text); background: transparent; border: 0; border-bottom: 1px solid var(--border-strong); padding: 2px 0; }
-.fit input:focus { outline: none; border-bottom-color: var(--accent); }
-.fit output { display: block; margin-top: 10px; color: var(--text-2); }
-.fit output:empty { display: none; }
-.fit output b { color: var(--text); }
-a:focus-visible, .btn:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.hero h1 { font-size: 20px; font-weight: 600; margin: 0 0 8px; }
-.hero p { color: var(--text-2); margin: 0 auto; max-width: 62ch; }
-.btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin: 28px 0 0; }
-.btn { display: inline-block; padding: 6px 14px; border: 1px solid var(--border-strong); text-decoration: none; color: var(--text); background: var(--bg); font-weight: 600; }
+.hero h1 { font-size: clamp(32px, 5.4vw, 60px); line-height: 1.08; letter-spacing: -0.02em; font-weight: 700; margin: 0 0 20px; max-width: 22ch; }
+.hero .lede { font-size: clamp(17px, 1.9vw, 21px); line-height: 1.5; color: var(--text-2); margin: 0 0 32px; max-width: 52ch; }
+.btns { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.btn { display: inline-block; padding: 12px 22px; border: 1px solid var(--border-strong); text-decoration: none; color: var(--text); background: var(--bg); font-weight: 700; font-size: 16px; }
 .btn:hover { border-color: var(--accent); color: var(--accent); }
 .btn.solid { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
 .btn.solid:hover { color: var(--brand-ink); filter: brightness(1.1); }
-.status { display: inline-block; margin-top: 24px; font-size: 12px; color: var(--muted); border: 1px solid var(--border); padding: 2px 10px; }
+.status { margin: 24px 0 0; color: var(--text-2); }
+.status b { color: var(--text); font-weight: 700; }
 
-h2 { font-size: 15px; font-weight: 700; margin: 48px 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+/* Proof strip: three measured results, before struck through. */
+.proof { display: grid; grid-template-columns: repeat(3, 1fr); margin: 64px 0 0; border-top: 2px solid var(--text); }
+.proof div { padding: 20px 24px 4px 0; }
+.proof div + div { padding-left: 24px; border-left: 1px solid var(--border); }
+.proof .v { font-size: clamp(30px, 4vw, 44px); font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; }
+.proof .v s { font-size: 0.5em; font-weight: 400; color: var(--muted); text-decoration-thickness: 2px; margin-right: 0.4em; vertical-align: 0.3em; letter-spacing: 0; }
+.proof p { margin: 10px 0 0; color: var(--text-2); }
+@media (max-width: 760px) {
+  .proof { grid-template-columns: 1fr; }
+  .proof div, .proof div + div { padding: 18px 0; border-left: 0; }
+  .proof div + div { border-top: 1px solid var(--border); }
+}
+
+h2 { font-size: clamp(24px, 3vw, 32px); line-height: 1.2; letter-spacing: -0.01em; font-weight: 700; margin: 96px 0 24px; }
 h2::before { content: "## "; color: var(--muted); font-weight: 400; }
-h3 { font-size: 14px; font-weight: 600; margin: 28px 0 6px; }
-p { margin: 0 0 12px; }
+h3 { font-size: 19px; font-weight: 700; margin: 48px 0 12px; }
+p { margin: 0 0 14px; }
 .dim { color: var(--muted); }
-ul { margin: 0 0 12px; padding-left: 0; list-style: none; }
-ul li { padding-left: 2ch; text-indent: -2ch; margin-bottom: 4px; }
+ul { margin: 0 0 14px; padding-left: 0; list-style: none; }
+ul li { padding-left: 2ch; text-indent: -2ch; margin-bottom: 8px; }
 ul li::before { content: "- "; color: var(--muted); }
-ul li .dim { display: block; text-indent: 0; }
-ul.check li { padding-left: 4ch; text-indent: -4ch; margin-bottom: 6px; }
-ul.check li::before { content: "[x] "; color: var(--accent); font-weight: 700; }
-ul.check b { font-weight: 700; }
-details.more { margin: 8px 0 0; }
-details.more summary { cursor: pointer; color: var(--text-2); margin-bottom: 10px; }
-details.more summary:hover { color: var(--accent); }
-ol { margin: 0 0 12px; padding-left: 3ch; }
-ol li { margin-bottom: 4px; }
-ol li::marker { color: var(--muted); }
 
-pre { margin: 0 0 4px; padding: 12px 14px; background: var(--bg-deep); border: 1px solid var(--border); overflow-x: auto; font: 13px/1.45 "JetBrains Mono", ui-monospace, monospace; color: var(--text-2); }
+/* What you get: each fix with what it replaced. */
+.fixes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 56px; margin: 0; padding: 0; list-style: none; }
+.fixes li { padding: 0; text-indent: 0; margin: 0; }
+.fixes li::before { content: none; }
+.fixes h3 { margin: 0 0 8px; font-size: 20px; line-height: 1.3; }
+.fixes h3::before { content: "[x] "; color: var(--accent); }
+.fixes p { margin: 0 0 8px; }
+.fixes .was { color: var(--muted); font-size: 15px; margin: 0; }
+@media (max-width: 760px) { .fixes { grid-template-columns: 1fr; gap: 32px; } }
+
+ol.steps { margin: 0; padding: 0; list-style: none; counter-reset: s; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; }
+ol.steps li { counter-increment: s; border-top: 2px solid var(--text); padding-top: 14px; }
+ol.steps li::before { content: counter(s); display: block; font-size: 32px; font-weight: 700; color: var(--accent); line-height: 1; margin-bottom: 12px; }
+@media (max-width: 860px) { ol.steps { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { ol.steps { grid-template-columns: 1fr; } }
+
+pre { margin: 0 0 12px; padding: 18px 20px; background: var(--bg-deep); border: 1px solid var(--border); overflow-x: auto; font: 15px/1.5 "JetBrains Mono", ui-monospace, monospace; color: var(--text-2); }
+@media (max-width: 600px) { pre { font-size: 13px; padding: 14px; } }
 pre .bb { color: var(--bar-before); }
 pre .ba { color: var(--bar-after); }
 pre .bc { color: var(--bar-cost); }
 pre .m { color: var(--muted); }
-.note { font-size: 12.5px; color: var(--muted); margin: 0 0 8px; }
-.key { font-size: 12.5px; color: var(--muted); margin: 0 0 6px; }
+.note { color: var(--text-2); max-width: 72ch; margin: 0 0 10px; }
+.key { font-size: 15px; color: var(--text-2); margin: 0 0 8px; }
 .key i { font-style: normal; }
 .key .kb { color: var(--bar-before); } .key .ka { color: var(--bar-after); } .key .kc { color: var(--bar-cost); }
 
-table { border-collapse: collapse; width: 100%; margin: 0 0 12px; font-size: 13px; }
-th, td { border: 1px solid var(--border-strong); padding: 6px 10px; text-align: left; vertical-align: top; }
-th { background: var(--surface); font-weight: 600; }
+table { border-collapse: collapse; width: 100%; margin: 0 0 16px; font-size: 15px; }
+th, td { border-bottom: 1px solid var(--border-strong); padding: 12px 16px 12px 0; text-align: left; vertical-align: top; }
+th { font-weight: 700; color: var(--muted); border-bottom: 2px solid var(--text); }
+td:first-child { font-weight: 700; white-space: nowrap; }
+td:nth-child(2) { white-space: nowrap; }
 .tbl { overflow-x: auto; }
 
-.warn { border: 1px solid var(--border-strong); border-left: 3px solid var(--accent); padding: 10px 14px; margin: 12px 0; color: var(--text-2); background: var(--surface); }
+.warn { border-left: 4px solid var(--accent); padding: 16px 20px; margin: 24px 0; color: var(--text); background: var(--surface); }
 
-footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); display: flex; gap: 16px; flex-wrap: wrap; justify-content: space-between; }
+.fit { max-width: 72ch; margin: 24px 0 0; padding: 20px 22px; border: 1px solid var(--border-strong); background: var(--bg-deep); }
+.fit p { margin: 0; }
+.fit label { display: block; font-weight: 700; margin-bottom: 4px; }
+.fit .cmd { display: block; font-weight: 400; color: var(--text-2); margin-bottom: 12px; }
+.fit .line { display: flex; gap: 1ch; align-items: baseline; }
+.fit .line span { color: var(--accent); font-weight: 700; }
+.fit input { flex: 1; min-width: 0; font: inherit; font-size: 17px; color: var(--text); background: transparent; border: 0; border-bottom: 2px solid var(--border-strong); padding: 4px 0; }
+.fit input:focus { outline: none; border-bottom-color: var(--accent); }
+.fit output { display: block; margin-top: 14px; color: var(--text-2); }
+.fit output:empty { display: none; }
+.fit output b { color: var(--text); }
+
+footer { margin-top: 96px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 14px; color: var(--muted); display: flex; gap: 16px; flex-wrap: wrap; justify-content: space-between; }
 footer a { color: var(--muted); }
 </style>
 </head>
@@ -162,53 +188,36 @@ footer a { color: var(--muted); }
 <section class="hero">
   {{WORDMARK}}
   <h1>Sane laptop defaults for ASUS on Omarchy.</h1>
-  <p>Install it and your ROG behaves like a laptop. No G-Helper, no Armoury Crate, no flipping modes by hand.</p>
+  <p class="lede">Install it and your ROG behaves like a laptop. No G&#8209;Helper, no Armoury Crate, no flipping modes by hand.</p>
   <div class="btns">
     <a class="btn solid" href="https://github.com/omarchy-asus/omarchy-asus/blob/main/LAPTOP-SETUP.md">Install</a>
     <a class="btn" href="https://github.com/omarchy-asus/omarchy-asus">Source</a>
     <a class="btn" href="https://github.com/omarchy-asus/omarchy-asus/issues/36">Tracker</a>
   </div>
-  <span class="status">status: experimental · for: ROG Zephyrus G16 / G14 · tested: GA605KM</span>
+  <p class="status">Experimental. Built for the ROG Zephyrus <b>G16</b> and <b>G14</b>, tested on a <b>GA605KM</b>. Other ASUS laptops share most of it.</p>
+  <div class="proof">
+    <div><span class="v"><s>~12 W</s>9.2 W</span><p>YouTube on battery, all fixes combined</p></div>
+    <div><span class="v"><s>100 %</s>0 %</span><p>of 1 % battery drops that woke the RTX</p></div>
+    <div><span class="v"><s>3,800</s>0 rpm</span><p>fastest fan at idle on battery</p></div>
+  </div>
 </section>
 
-<div class="fit">
-  <label for="model">Will it work on mine? <span class="cmd">paste the output of <code>cat /sys/class/dmi/id/product_name</code></span></label>
-  <p class="line"><span aria-hidden="true">$</span><input id="model" type="text" autocomplete="off" spellcheck="false" placeholder="ROG Zephyrus G16 GA605KM"></p>
-  <output for="model" id="model-out" aria-live="polite"></output>
-</div>
-
 <h2 id="works">What you get</h2>
-<ul class="check">
-  <li><b>Great battery life.</b> About 9 W watching YouTube on battery.</li>
-  <li><b>The RTX sleeps when it should.</b> It wakes for a monitor or a game, not for nothing.</li>
-  <li><b>Hibernate that works.</b> Leave it asleep unplugged and it hibernates instead of dying.</li>
-  <li><b>Keyboard and Slash LED control.</b> Brightness and patterns, built in.</li>
-  <li><b>Quiet on battery.</b> Fans off at idle.</li>
-  <li><b>Chargers just work.</b> USB-C or barrel, it picks the right power mode.</li>
-  <li><b>Monitors just work.</b> Native resolution, and windows stay put after a replug.</li>
-  <li><b>Stays asleep in your bag.</b> The touchpad can't wake it.</li>
-  <li><b>See your Win-lock.</b> Fn+Super lock state shows up instead of a dead key.</li>
-  <li><b>Speakers at full volume.</b></li>
+<ul class="fixes">
+  <li><h3>Hibernate that works</h3><p>Close the lid, unplug, walk away. After 20 minutes asleep it hibernates, and opens back up where you left off.</p><p class="was">was: the battery drained flat in sleep, and hibernate never actually powered off (NVIDIA #1412, HibernateMode=shutdown)</p></li>
+  <li><h3>The RTX sleeps when it should</h3><p>It wakes when you plug in a monitor or start a game, and sleeps the rest of the time.</p><p class="was">was: woken for 20–25 s every time the battery dropped 1 % (NVIDIA #1299)</p></li>
+  <li><h3>Cheap video on battery</h3><p>YouTube and mpv play on the Radeon's video engine, so neither the RTX nor the CPU works for it. About 9 W for YouTube.</p><p class="was">was: software decode, or a woken RTX</p></li>
+  <li><h3>Quiet on battery</h3><p>The fans stay off while you read, write or browse.</p><p class="was">was: 2,000–3,800 rpm at idle. Temps under sustained load in this mode aren't logged yet</p></li>
+  <li><h3>Stays asleep in your bag</h3><p>Brushing the touchpad won't wake it; a click will.</p><p class="was">was: 129k touchpad wake events in one boot (ASUF1209 wake disarmed)</p></li>
+  <li><h3>Chargers just work</h3><p>USB-C or barrel, it picks the right power mode.</p><p class="was">was: asusd and power-profiles fighting over the profile and EPP</p></li>
+  <li><h3>Monitors just work</h3><p>Native resolution, and your windows are where you left them after a replug.</p><p class="was">was: windows rendered off-screen after an HDMI replug (Hyprland #16140)</p></li>
+  <li><h3>You can see your Win-lock</h3><p>Fn+Super locks Super in the keyboard's firmware. We pass the state through and show a toast, so it no longer looks like a dead key.</p><p class="was">was: stock hid-asus ate the lock report, so Super silently stopped working</p></li>
+  <li><h3>Keyboard and Slash LEDs</h3><p>Brightness and patterns from the G16 Control widget in the bar.</p></li>
+  <li><h3>Speakers at full volume</h3><p>The ALC285 gets its whole range, and PipeWire runs at realtime priority.</p><p class="was">was: Master hid 12.75 dB of volume</p></li>
 </ul>
-<p class="dim">All of this runs on our G16 today. Some of it is still being packaged; see <a href="#next">in progress</a>.</p>
-<p class="dim">The fixes target the Zephyrus G16 and G14 family. Most of the stack (asus-wmi, hid-asus, the NVIDIA driver, hibernate, Hyprland) is shared across ASUS models, so other ROG and TUF laptops are welcome too; see <a href="#contributing">contributing</a>.</p>
-<details class="more"><summary>What was broken before</summary>
-<p>Fn+Super, for example, is locked by the keyboard's firmware; stock Linux just eats the report. Most of these are like that: small, specific, and invisible until you trace them.</p>
-<ul>
-  <li>Close the lid, unplug, walk away. It's still there tomorrow: after 20 minutes asleep it hibernates, and opens back up where you left off. <span class="dim">was: the battery drained flat in sleep, and hibernate never actually powered off (NVIDIA #1412, HibernateMode=shutdown)</span></li>
-  <li>It stays asleep in your bag. Brushing the touchpad won't wake it; a click will. <span class="dim">was: 129k touchpad wake events in one boot (ASUF1209 wake disarmed)</span></li>
-  <li>The RTX stays out of the way. It wakes when you plug in a monitor or start a game, and sleeps the rest of the time. <span class="dim">was: also woken for 20–25 s every time the battery dropped 1 % (NVIDIA #1299)</span></li>
-  <li>Video on battery is cheap. YouTube and mpv play on the Radeon's video engine, so neither the RTX nor the CPU has to work for it. <span class="dim">was: software decode, or a woken RTX</span></li>
-  <li>It's quiet on battery. The fans stay off while you read, write or browse. <span class="dim">was: 2,000–3,800 rpm at idle. Temps under sustained load in this mode aren't logged yet</span></li>
-  <li>Plug in a charger and it just does the right thing, whether it's USB-C or the barrel. <span class="dim">was: asusd and power-profiles fighting over the profile and EPP</span></li>
-  <li>Plug in a monitor and it comes up at its native resolution, and your windows are where you left them after a replug. <span class="dim">was: windows rendered off-screen after an HDMI replug (Hyprland #16140)</span></li>
-  <li>You know when the Super key is locked. Fn+Super locks it in the keyboard's firmware; we just pass that through, so it no longer looks like a dead key, and an on-screen toast says when it locks or unlocks. <span class="dim">was: stock Linux's hid-asus driver eats the lock report, so Super silently stops working</span></li>
-  <li>The speakers go all the way up. <span class="dim">was: ALC285 Master hid 12.75 dB of volume. PipeWire also runs at realtime priority now (rtkit)</span></li>
-</ul>
-</details>
 
 <h2 id="numbers">Numbers</h2>
-<p>Measured on a GA605KM (Ryzen AI 7 350, RTX 5060 Laptop), mostly on battery, with repeated A/B runs where noted. The fixes were applied locally on kernel 7.2.5 and nvidia-open 610; the packaged builds carry the same patches on newer bases and haven't been installed yet.</p>
+<p class="measure">Measured on a GA605KM (Ryzen AI 7 350, RTX 5060 Laptop), mostly on battery, with repeated A/B runs where noted. The fixes were applied locally on kernel 7.2.5 and nvidia-open 610; the packaged builds carry the same patches on newer bases and haven't been installed yet.</p>
 <p class="key"><i class="kb">██</i> before &nbsp; <i class="ka">██</i> after</p>
 
 <h3>RTX wake-ups per 1 % battery drop</h3>
@@ -238,7 +247,7 @@ footer a { color: var(--muted); }
 <p class="note">We keep the ones that pay. YouTube on battery went from ~12 W to ~9.2 W with several fixes combined; we don't credit that to any one of them.</p>
 
 <h2 id="packages">Packages</h2>
-<p>Served from the <a href="https://github.com/omarchy-asus/omarchy-asus/releases/tag/x86_64">x86_64 release</a>. Versions are upstream's plus <code>.1</code>, so they install over stock and step aside when upstream catches up.</p>
+<p class="measure">Served from the <a href="https://github.com/omarchy-asus/omarchy-asus/releases/tag/x86_64">x86_64 release</a>. Versions are upstream's plus <code>.1</code>, so they install over stock and step aside when upstream catches up.</p>
 <div class="tbl">
 <table>
   <tr><th>package</th><th>version</th><th>fixes</th><th>upstream</th></tr>
@@ -255,7 +264,7 @@ footer a { color: var(--muted); }
 <div class="warn">Experimental, tested on the GA605 only. These replace <code>linux-omarchy</code> and the NVIDIA driver, so keep a second kernel (e.g. Arch <code>linux</code>) as a boot fallback. Key fingerprint <code>0B44FF7CCDD929F61BE4A2E436FE6B28AB24EC88</code>.</div>
 
 <h2 id="how">How it works</h2>
-<ol>
+<ol class="steps">
   <li>Write the fix the way upstream would, gated on the hardware it's for.</li>
   <li>Measure it on the laptop. If it doesn't measure up, it doesn't ship.</li>
   <li>Ship a signed build, and send the patch upstream with a link back.</li>
@@ -279,7 +288,13 @@ footer a { color: var(--muted); }
 </ul>
 
 <h2 id="contributing">Contributing</h2>
-<p>Got a G16, a G14, or another ASUS laptop? A lot is shared between models, so your fix may already be here, or yours may help ours. <a href="https://github.com/omarchy-asus/omarchy-asus/issues/new">Open an issue</a> with the output of <code>cat /sys/class/dmi/id/product_name</code>, <code>uname -r</code> and <code>omarchy version</code>, and what's broken. Small PRs tested on real hardware are welcome.</p>
+<p class="measure">Got a G16, a G14, or another ASUS laptop? A lot is shared between models, so your fix may already be here, or yours may help ours. <a href="https://github.com/omarchy-asus/omarchy-asus/issues/new">Open an issue</a> with the output of <code>cat /sys/class/dmi/id/product_name</code>, <code>uname -r</code> and <code>omarchy version</code>, and what's broken. Small PRs tested on real hardware are welcome.</p>
+<div class="fit">
+  <label for="model">Will it work on mine?</label>
+  <span class="cmd">Paste what <code>cat /sys/class/dmi/id/product_name</code> prints.</span>
+  <p class="line"><span aria-hidden="true">$</span><input id="model" type="text" autocomplete="off" spellcheck="false" placeholder="ROG Zephyrus G16 GA605KM"></p>
+  <output for="model" id="model-out" aria-live="polite"></output>
+</div>
 
 <footer>
   <span>Unofficial. Not affiliated with Basecamp, Omacom, NVIDIA or ASUS. Built on <a href="https://omarchy.org">Omarchy</a>.</span>
